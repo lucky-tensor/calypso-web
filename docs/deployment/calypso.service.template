@@ -1,0 +1,16 @@
+[Unit]
+Description=Calypso Web Application
+After=network.target
+
+[Service]
+Type=simple
+User=calypso
+Group=calypso
+WorkingDirectory=/home/calypso/app
+EnvironmentFile=/home/calypso/app/.env
+ExecStart=/usr/bin/bun run --filter "@calypso/server" start
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

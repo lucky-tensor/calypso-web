@@ -1,0 +1,25 @@
+{
+    "name": "calypso-web-monorepo",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "bun run --filter \"*\" dev",
+        "build": "bun run --filter \"*\" build",
+        "test": "bun test tests/unit tests/integration",
+        "lint": "bunx eslint .",
+        "format": "bunx prettier --write ."
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.58.2",
+        "@types/node": "^20.0.0",
+        "eslint": "^8.0.0",
+        "hono": "^4.12.5",
+        "prettier": "^3.0.0",
+        "typescript": "^5.0.0",
+        "vitest": "^4.0.18"
+    }
+}

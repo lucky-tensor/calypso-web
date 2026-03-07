@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@calypso/core": [
+                "./packages/core/src"
+            ],
+            "@calypso/ui": [
+                "./packages/ui/src"
+            ],
+            "@calypso/services": [
+                "./packages/services/src"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

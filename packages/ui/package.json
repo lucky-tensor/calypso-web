@@ -1,0 +1,13 @@
+{
+  "name": "@calypso/ui",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}
