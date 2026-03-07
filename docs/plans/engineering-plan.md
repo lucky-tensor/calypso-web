@@ -11,33 +11,30 @@ The project follows the **Calypso Blueprint**:
 
 ---
 
-## 2. Milestones
+## 2. Milestone 1: Prototype (Comprehensive)
+**Goal**: Build a fully functional prototype with UI, persistence, and agent integration.
 
-### Milestone 0: Scaffold (COMPLETED)
-- [x] Monorepo structure established.
-- [x] SPA routing implemented.
-- [x] Testing foundations (Vitest/Playwright) verified.
-- [x] Repo hosted on GitHub.
-
-### Milestone 1: Prototype (Flash Phase)
-**Goal**: Interactive UI for data gathering with no persistence.
+### Phase 1: Interactive Wizard & UI
 - **UI Architecture**: Focus-mode state machine in React (`/apps/web`).
 - **Data Model**: Universal TypeScript interfaces for PRD sections in `@calypso/core`.
 - **Validation**: Client-side validation for business unit mapping.
-- **E2E**: Verify user flow from "Start" to "Review Summary".
+- **Aesthetic**: Premium dark-mode/glassmorphism following the Calypso design standard.
 
-### Milestone 2: Alpha (Data Integrity)
-**Goal**: Persisting wizard states and basic file output.
-- **Persistence**: Integration of `bun:sqlite` in `/apps/server`.
-- **Auth**: Minimalist self-hosted JWT middleware.
-- **File I/O**: Server service to write `.md` files to a dedicated `output/` directory.
-- **API**: Endpoints for `saveState` and `generateDraft`.
+### Phase 2: Persistence & Authentication
+- **Persistence**: Implementation of `bun:sqlite` in `/apps/server` for session state.
+- **Auth**: Minimalist self-hosted JWT middleware for secure interaction.
+- **File I/O**: Server service to write generated `.md` files to the repository.
 
-### Milestone 3: Beta (Agent Integration)
-**Goal**: Headless generation using CLI agents.
-- **Agent Bridge**: `/packages/services` module to execute `gh` or `claude` commands.
-- **Streaming**: Handle long-running generation tasks with state polling.
-- **Golden Fixtures**: Record real LLM responses for deterministic integration testing.
+### Phase 3: Headless Agent Integration
+- **Agent Bridge**: `/packages/services` module to execute `gh` or `claude` (Claude CLI) commands.
+- **Generation**: Automated generation of `docs/prd.md` based on gathered wizard data.
+- **Golden Fixtures**: Recording real LLM responses to ensure test determinism.
+
+---
+
+## 3. Future Phases (Post-Prototype)
+- **Beta**: Transition to PostgreSQL, multi-user scaling, and observability.
+- **V1**: Production stability and cloud-native deployment.
 
 ---
 
