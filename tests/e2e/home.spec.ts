@@ -12,8 +12,9 @@ test.describe('Home Page', () => {
 
         // Check for the presence of the main heading
         const title = page.locator('h1');
-        await expect(title).toContainText('Calypso PRD Wizard');
+        await expect(title).toContainText('Define your Vision');
     });
+
 
     test('health check endpoint is accessible', async ({ request }: { request: any }) => {
         const response = await request.get('/health');

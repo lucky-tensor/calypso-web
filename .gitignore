@@ -7,6 +7,16 @@ dist/
 build/
 .output/
 
+# SQLite databases
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+
+# Coverage
+coverage/
+.nyc_output/
+
 # Logs
 *.log
 npm-debug.log*
@@ -31,8 +41,27 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 
+# Binary artifacts (Safety)
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.out
+
+# Archives (Safety)
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Tool Caches
+.turbo/
+.next/
+.cache/

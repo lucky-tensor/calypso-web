@@ -1,36 +1,79 @@
-import { Context, Hono } from 'hono';
+import { Hono, Context } from 'hono';
 import { serveStatic } from 'hono/bun';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { AuthService } from './auth';
+import { PrdDb } from './db';
+import { PRDSchema } from '@calypso/core';
+import { AgentBridge } from './agent';
+
+type Env = {
+  Variables: {
+    userId: string;
+  };
+};
+
+const app = new Hono<Env>();
+
+// --- API Layer ---
 
 /**
- * Calypso Server Implementation
- * 
- * This server uses Hono for routing and Bun's native APIs for efficiency.
- * It strictly adheres to the Calypso Blueprint by serving both API endpoints
- * and the static frontend bundle.
+ * Session Persistence Endpoints
  */
-const app = new Hono();
+app.post('/api/session', AuthService.middleware, async (c) => {
+  const data = await c.req.json() as PRDSchema;
+  const userId = c.get('userId');
 
-// Root API endpoint for basic visibility
-app.get('/api', (c: Context) => c.text('Calypso Server API - Active'));
+  PrdDb.saveSession(userId, data);
+  return c.json({ success: true, updatedAt: new Date().toISOString() });
+});
+
+app.get('/api/session', AuthService.middleware, async (c) => {
+  const userId = c.get('userId');
+  const session = PrdDb.getSession(userId);
+
+  if (!session) return c.json({ error: 'Session not found' }, 404);
+  return c.json(session);
+});
+
+// Auth bootstrapping (Proto-only simple login)
+app.post('/api/auth/login', async (c) => {
+  const { userId } = await c.req.json();
+  const token = await AuthService.generateToken(userId);
+  return c.json({ token });
+});
+
+/**
+ * Wizard generation endpoint
+ * Triggers the Claude CLI to generate the final prd.md.
+ */
+app.post('/api/wizard/generate', AuthService.middleware, async (c) => {
+  const userId = c.get('userId');
+  const session = PrdDb.getSession(userId);
+
+  if (!session) return c.json({ error: 'Session not found' }, 404);
+
+  try {
+    const prdContent = await AgentBridge.generatePRD(session);
+    return c.json({
+      status: 'complete',
+      content: prdContent
+    });
+  } catch (e: any) {
+    return c.json({ error: e.message }, 500);
+  }
+});
 
 /**
  * Health check endpoint for monitoring and CI/CD validation.
  */
-app.get('/health', (c: Context) => c.json({ status: 'ok', timestamp: new Date().toISOString() }));
+app.get('/health', (c) => c.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
 /**
- * Wizard generation endpoint (STUB)
- * This will eventually handle the PRD generation logic.
+ * API 404 Handler
+ * Protects API namespace from SPA fallback.
  */
-app.post('/api/wizard/generate', async (c: Context) => {
-
-  return c.json({
-    status: 'pending',
-    message: 'Wizard logic is currently being implemented via the agent-bridge.'
-  });
-});
+app.all('/api/*', (c) => c.json({ error: 'API route not found' }, 404));
 
 /**
  * Static Asset Serving & SPA Routing
@@ -45,7 +88,6 @@ app.use('/*', serveStatic({ root: '../web/dist' }));
 
 // SPA Fallback: Serve index.html for all other routes
 app.get('*', async (c: Context) => {
-
   try {
     const indexPath = path.resolve('../web/dist/index.html');
     const indexContent = await readFile(indexPath, 'utf-8');
@@ -63,4 +105,3 @@ export default {
   port: 31415,
   fetch: app.fetch,
 };
-

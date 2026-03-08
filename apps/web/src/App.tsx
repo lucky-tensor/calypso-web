@@ -1,38 +1,60 @@
 import React from 'react';
+import { useWizard } from './WizardContext';
+import DiscoveryStep from './components/DiscoveryStep';
+import MappingStep from './components/MappingStep';
+import GovernanceStep from './components/GovernanceStep';
+import ReviewStep from './components/ReviewStep';
+
+
+
 
 /**
- * Main Application Component
+ * Main Application Shell
  * 
- * This is the entry point for the Calypso PRD Wizard. It follows the "Focus-Mode"
- * design philosophy to provide an elite, minimal User Experience (UX).
- * 
- * @returns {JSX.Element} The rendered React application.
+ * Orchestrates the rendering of wizard steps based on the global state.
+ * Implements the focus-mode layout as per Calypso standards.
  */
 function App() {
-    /**
-     * Render Logic
-     * We use a centered layout with a premium dark-mode aesthetic using Tailwind CSS.
-     */
+    const { currentStep } = useWizard();
+
+    const renderStep = () => {
+        switch (currentStep) {
+            case 'Discovery':
+                return <DiscoveryStep />;
+            case 'Mapping':
+                return <MappingStep />;
+            case 'Governance':
+                return <GovernanceStep />;
+            case 'Review':
+                return <ReviewStep />;
+            case 'Complete':
+                return <div className="text-white">Generation Complete!</div>;
+            default:
+                return <DiscoveryStep />;
+        }
+    };
+
+
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-slate-950">
-            <div className="max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-                <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                    Calypso PRD Wizard
-                </h1>
-                <p className="text-slate-400 mb-8">
-                    The elite way to bootstrap your enterprise software requirements.
-                    Powered by the Calypso Blueprint for AI-native development.
-                </p>
-                <button
-                    id="start-interview"
-                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all transform hover:scale-105 font-medium shadow-lg"
-                >
-                    Start Interview
-                </button>
+        <main className="focus-container">
+            <div className="w-full max-w-4xl mx-auto">
+                {renderStep()}
             </div>
-        </div>
+
+            {/* Progress Indicator */}
+            <div className="fixed bottom-12 left-1/2 -translate-x-1/2 flex gap-2">
+                {['Discovery', 'Mapping', 'Governance', 'Review'].map((step) => (
+                    <div
+                        key={step}
+                        className={`h-1.5 w-12 rounded-full transition-all duration-500 ${currentStep === step ? 'bg-primary w-24' : 'bg-slate-800'
+                            }`}
+                    />
+                ))}
+            </div>
+        </main>
     );
 }
 
 export default App;
+
 

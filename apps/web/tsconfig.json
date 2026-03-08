@@ -9,6 +9,12 @@
         ],
         "module": "ESNext",
         "moduleResolution": "bundler",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        },
         "noEmit": true
     },
     "include": [
